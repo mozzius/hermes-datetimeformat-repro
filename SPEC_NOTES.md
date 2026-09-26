@@ -52,9 +52,44 @@ and locale/option precedence tests.
   does not apply `hourCycle_`. This is a source-level finding, **not** a
   runtime-tested claim about a particular Linux build.
 - Android's Java `DateTimeFormat.java` accounts for `timeStyle` when deciding
-  whether an hour exists. Its ICU and legacy `java.text` formatters have
-  separate style-handling code that warrants Android-specific tests before
-  asserting conformance or changing them.
+  whether an hour exists. The API 24+ ICU and older `java.text` formatter
+  paths have separate behavior; the device observations below are for API 35.
+
+## Android device comparison
+
+The standalone RN 0.86.3 repro ran on a Pixel 9 Pro Android 15 (API 35)
+emulator, with Hermes `250829098.0.17` and Chromium WebView 124.0.6367.219.
+The fixed instant and `Europe/Helsinki` zone were used in both engines. The
+device's 24-hour clock preference was **off**, and the original Bluesky/Lingui
+path formatted `5:54 pm` on Hermes. Thus Android does **not** reproduce the
+Apple backend's ignored `timeStyle` + `hour12` behavior.
+
+| Locale, options, local time | Android Hermes: format / `hourCycle` | Chromium WebView: format / `hourCycle` |
+| --- | --- | --- |
+| `en-GB`, `timeStyle: 'short', hour12: true`, 17:54 | `5:54 pm` / `h11` | `05:54 pm` / `h12` |
+| same options, 00:54 | `12:54 am` / `h11` | `12:54 am` / `h12` |
+| `en-GB`, explicit `hourCycle: 'h11'`, 00:54 | `12:54 am` / `h11` | `00:54 am` / `h11` |
+| `en-US`, `timeStyle: 'short', hour12: false`, 00:54 | `00:54` / `h24` | `00:54` / `h23` |
+| `en-US`, explicit `hourCycle: 'h24'`, 00:54 | `00:54` / `h24` | `24:54` / `h24` |
+| `ja-JP`, `timeStyle: 'short', hour12: true`, 00:54 | `午前0:54` / `h11` | `午前0:54` / `h11` |
+
+The explicit `h11`/`h24` cases establish a conformance failure independent
+of browser-specific locale-data choices: the requested cycle and reported
+cycle agree, but the hour at midnight is wrong. For `hour12` alone, Android
+also reports the opposite cycle from the one its output actually uses.
+`formatToParts()` classifies the hour and day period correctly in these rows,
+unlike the separate Apple combined-style issue noted above.
+
+In Android's `DateTimeFormat.java`, the `hour12` selection pairs a default
+`h23` with `h11` and a default `h12` with `h24` instead of obtaining the
+locale's preferred 12- and 24-hour cycles. In
+`PlatformDateTimeFormatterICU.java`, both `H11` and `H12` are collapsed to an
+`h` skeleton, and both `H23` and `H24` to `k`; the resulting pattern on this
+device formats midnight as `12` or `00` regardless of the requested starting
+hour. The Android Test262 harness currently skips its
+`resolvedOptions/hourCycle-timeStyle.js` test. The Apple-only upstream PR does
+not change either Android Java file, so this needs a separate upstream fix and
+Android regression tests (including API-level coverage).
 
 The Apple patch passes the existing Apple formatter test, its new regression
 test, and the focused Test262 `hourCycle-timeStyle`, `hourCycle-dateStyle`,

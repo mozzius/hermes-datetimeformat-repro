@@ -34,6 +34,16 @@ extension `en-GB-u-hc-h12` and explicit `{hour, minute}` rows are controls.
 Additional rows cover precedence between locale and options, the absence of
 hour-cycle fields for a date-only style, and Japanese midnight (`h11`).
 
+On Android 15 (API 35) with RN 0.86.3, the original `hour12: true` request
+*does* produce a 12-hour time. A separate Hermes defect is visible at
+midnight: `en-GB` reports `h11` for `hour12: true` while formatting `12:54 am`
+(`h12` behavior), and explicitly requesting `h11` still formats `12:54 am`.
+Likewise, `en-US` reports `h24` for `hour12: false` while formatting `00:54`
+(`h23` behavior); explicitly requesting `h24` still formats `00:54`. The
+Chromium WebView displays `00:54 am` for explicit `h11` and `24:54` for
+explicit `h24`. These Android rows are distinct from the iOS styled-hour
+failure and are described in the spec notes.
+
 The same failing engine call can be tried without the UI:
 
 ```js

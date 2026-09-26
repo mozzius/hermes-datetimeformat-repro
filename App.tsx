@@ -84,6 +84,13 @@ const CASES: ProbeCase[] = [
     options: {timeStyle: 'short', hour12: true},
   },
   {
+    id: 'h11Midnight',
+    label: 'midnight · explicit hourCycle h11',
+    locale: 'en-GB',
+    instant: MIDNIGHT,
+    options: {timeStyle: 'short', hourCycle: 'h11'},
+  },
+  {
     id: 'hour12Precedence',
     label: 'locale h24 overridden by hour12 true',
     locale: 'en-GB-u-hc-h24',
@@ -117,6 +124,20 @@ const CASES: ProbeCase[] = [
     locale: 'en-US',
     instant: INSTANT,
     options: {timeStyle: 'short', hour12: false},
+  },
+  {
+    id: 'inverseMidnight',
+    label: 'en-US midnight · hour12 false',
+    locale: 'en-US',
+    instant: MIDNIGHT,
+    options: {timeStyle: 'short', hour12: false},
+  },
+  {
+    id: 'h24Midnight',
+    label: 'en-US midnight · explicit hourCycle h24',
+    locale: 'en-US',
+    instant: MIDNIGHT,
+    options: {timeStyle: 'short', hourCycle: 'h24'},
   },
 ]
 
