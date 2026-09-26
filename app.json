@@ -1,0 +1,18 @@
+{
+  "expo": {
+    "name": "Hermes Intl Repro",
+    "slug": "hermes-datetimeformat-repro",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "bundleIdentifier": "dev.mozzius.hermesdatetimeformatrepro",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "dev.mozzius.hermesdatetimeformatrepro"
+    },
+    "plugins": ["expo-localization"],
+    "newArchEnabled": true
+  }
+}

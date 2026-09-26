@@ -1,0 +1,29 @@
+{
+  "name": "hermes-datetimeformat-repro",
+  "version": "1.0.0",
+  "private": true,
+  "main": "expo/AppEntry",
+  "scripts": {
+    "start": "expo start",
+    "ios": "expo run:ios",
+    "android": "expo run:android",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@formatjs/intl-displaynames": "^7.3.9",
+    "@formatjs/intl-locale": "^5.3.8",
+    "@formatjs/intl-numberformat": "^9.3.10",
+    "@formatjs/intl-pluralrules": "^6.3.9",
+    "@lingui/core": "^5.9.2",
+    "expo": "57.0.24",
+    "expo-localization": "~57.0.2",
+    "react": "19.2.3",
+    "react-native": "0.86.3",
+    "react-native-webview": "13.16.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.0",
+    "typescript": "^5.9.0"
+  },
+  "packageManager": "pnpm@10.17.1"
+}
